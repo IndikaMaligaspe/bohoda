@@ -1,0 +1,16 @@
+
+    
+spring:
+  application:
+    name: Bohoda
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/IndikaMaligaspe/bohoda-config-test
+          repos:
+            development:
+              pattern: '*/development'
+              uri: https://github.com/IndikaMaligaspe/bohoda-config-development
+server:
+  port: 8888
