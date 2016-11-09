@@ -64,7 +64,7 @@ public class BohodaApplicationTests {
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
 	}
-
+ 
 	@Test
 	public void testJSONOutput_withoutInparameters() throws Exception {
 		mockMvc.perform(get(baseURL+"bohoda/JSON").accept(MediaType.APPLICATION_JSON)).andDo(print())
@@ -81,8 +81,8 @@ public class BohodaApplicationTests {
 	
 	@Test
 	public void testPropertyTextInputOutput() throws Exception {
-		mockMvc.perform(get(baseURL+"bohoda/JSON?file=oman_config_portals&project=development&environment=master").accept(MediaType.APPLICATION_JSON)).andDo(print())
-		.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML_VALUE));
+		mockMvc.perform(get(baseURL+"bohoda/PROPS?file=oman_config_portals&project=development&environment=master").accept(MediaType.TEXT_PLAIN_VALUE)).andDo(print())
+		.andExpect(status().isOk());
 	}
 	
 }
