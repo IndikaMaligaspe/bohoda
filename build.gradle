@@ -23,6 +23,9 @@ targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	maven {
+        url "https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path"
+    }
 }
 
 
@@ -31,7 +34,12 @@ dependencies {
 	compile('org.springframework.cloud:spring-cloud-config-server')
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.2.0'
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
+	testCompile 'com.jayway.jsonpath:json-path:2.2.0'
+
 }
 
 dependencyManagement {

@@ -11,11 +11,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,22 +27,27 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration
+//@TestPropertySource("bootstrap.yml")
 public class BohodaApplicationTests {
 
 	private String baseURL = "http://localhost:8888/bohoda";
-	
-	@Autowired
-	private WebApplicationContext wac;
-	private MockMvc mockMvc;
 
 	@Configuration
-	@EnableAutoConfiguration
 	public static class Config {
 		@Bean
 		public ClientController clientController() {
 			return new ClientController();
 		}
 	}
+
+//	@Autowired
+//	private ClientController controller;
+	
+	@Autowired
+	private WebApplicationContext wac;
+	private MockMvc mockMvc;
+
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -54,8 +61,7 @@ public class BohodaApplicationTests {
 	@Test
 	public void testJSONOutput() throws Exception {
 		mockMvc.perform(get(baseURL+"/JSON?file=oman_config_portals&project=development&environment=master").accept(MediaType.APPLICATION_JSON)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.message", is("message from Bohoda")));
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
 	}
 

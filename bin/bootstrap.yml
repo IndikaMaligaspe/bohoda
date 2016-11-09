@@ -14,3 +14,6 @@ spring:
               uri: https://github.com/IndikaMaligaspe/bohoda-config-development
 server:
   port: 8888
+
+service:
+  url:  http://localhost:8888  

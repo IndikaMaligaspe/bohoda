@@ -22,14 +22,17 @@ public class JSONConnector {
 		String sourceList = null;
 		logger.info("Inside handleRequest with request - file -" + file + ", project - " + project + ", environment - "
 				+ environment);
+		logger.debug("Calling Service - "+ bohodaService + "/" + file + "/" + project + "/" + environment );
 		if (null == bohodaService) {
 			return null;
 		}
 
 		try {
-			connect(bohodaService + "?file=" + file + "&project=" + project + "&environment=" + environment);
-			sourceList = decodeJSON(JSONString);
+			connect(bohodaService + "/" + file + "/" + project + "/" + environment);
+			sourceList = decodeJSON(this.JSONString);
+			logger.info(sourceList);
 		} catch (Exception e) {
+			e.printStackTrace();
 			sourceList = "ERROR - "+e.getMessage();
 		} finally {
 			try {
@@ -55,13 +58,16 @@ public class JSONConnector {
 			dis = new DataInputStream(uConn.getInputStream());
 			StringBuffer sbr = new StringBuffer();
 			String line = dis.readLine();
+			sbr.append(line);
 			while (null != (line = dis.readLine())) {
 				line = dis.readLine();
 				;
 				sbr.append(line);
 			}
 			this.JSONString = sbr.toString();
+			logger.debug("This JSON String --- "+this.JSONString );
 		} catch (Exception e) {
+			e.printStackTrace();
 			statusCode = 500;
 		}
 
