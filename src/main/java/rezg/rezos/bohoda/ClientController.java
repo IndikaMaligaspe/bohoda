@@ -23,7 +23,7 @@ import rezg.rezos.bohoda.connectors.JSONConnector;
 public class ClientController {
 	
 	
-	@Value("${service.uri}")
+	@Value("${service.url}")
 	private String bohodaService ;
 	
 	@RequestMapping(value = "/bohoda/JSON", produces = "application/json")
