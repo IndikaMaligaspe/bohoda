@@ -27,7 +27,6 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration
-//@TestPropertySource("bootstrap.yml")
 public class BohodaApplicationTests {
 
 	private String baseURL = "http://localhost:8888/bohoda";
