@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:bootstrap.yml")
 public class JSONConnectorTest {
 
 	private JSONConnector target = new JSONConnector();

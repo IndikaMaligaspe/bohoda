@@ -50,7 +50,6 @@ public class BohodaApplicationTests {
 
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("baseURL - "+baseURL);
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
@@ -84,5 +83,29 @@ public class BohodaApplicationTests {
 		mockMvc.perform(get(baseURL+"bohoda/PROPS?file=oman_config_portals&project=development&environment=master").accept(MediaType.TEXT_PLAIN_VALUE)).andDo(print())
 		.andExpect(status().isOk());
 	}
+//	mockMvc.perform(get("/path"))
+//	   .andExpect(content(containsString("text")));
+	
+	@Test
+	public void testTextPropertyOutput_withoutInparameters() throws Exception {
+		mockMvc.perform(get(baseURL+"bohoda/PROPS").accept(MediaType.TEXT_PLAIN_VALUE)).andDo(print())
+				.andExpect(status().is(400));
+
+	}
+	
+	@Test
+	public void testTextPropertyOutput_withoutNullParameters() throws Exception {
+		mockMvc.perform(get(baseURL+"bohoda/JSON?file=&project=&environment=").accept(MediaType.TEXT_PLAIN_VALUE)).andDo(print())
+				.andExpect(status().is(400));
+
+	}
+	
+	@Test
+	public void testPropertyOutput() throws Exception {
+		mockMvc.perform(get(baseURL+"bohoda/PROPERTIES?file=oman_config_portals&project=development&environment=master").accept(MediaType.APPLICATION_JSON)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+	}
+	
 	
 }
