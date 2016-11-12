@@ -26,13 +26,15 @@ public class PropertyObjectConnector {
 	private String serviceResponse;
 	private Logger logger = (Logger) Logger.getInstance(PropertyObjectConnector.class);
 
-	public Object handleRequest(String file, String project, String environment) {
+	public Object handleRequest(String file, String project, String environment,String bohodaService) {
 		Properties props = null;
 		try {
 			props = new Properties();
-
+			if (connect(bohodaService + "/" + file + "/" + project + "/" + environment)==200)
+				props = convertServicResponse(serviceResponse);
 		} catch (Exception e) {
-			props = null;
+			e.printStackTrace();
+			props = new Properties();
 		}
 		// TODO Auto-generated method stub
 		return props;

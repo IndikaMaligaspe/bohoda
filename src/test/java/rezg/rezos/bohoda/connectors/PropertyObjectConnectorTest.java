@@ -38,7 +38,7 @@ public class PropertyObjectConnectorTest {
 		file = "oman_config_portals";
 		project = "development";
 		environment = "master";
-		Object response = target.handleRequest(file,project,environment);
+		Object response = target.handleRequest(file,project,environment,bohodaService);
 		assertNotNull(response);
 	}
 	

@@ -1,5 +1,7 @@
 package rezg.rezos.bohoda;
 
+import javax.ws.rs.Produces;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rezg.rezos.bohoda.connectors.JSONConnector;
+import rezg.rezos.bohoda.connectors.PropertyObjectConnector;
 import rezg.rezos.bohoda.connectors.PropertyTextConnector;
 
 
@@ -42,11 +45,12 @@ public class ClientController {
 	}
 	
 	
-	@RequestMapping(value = "/bohoda/PROPERTIES", produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "/bohoda/PROPERTIES")
+	@Produces({MediaType.APPLICATION_OCTET_STREAM_VALUE})
 	public ResponseEntity<?> bohodaPropertyObject( @RequestParam("file") String file, @RequestParam("project") String project, @RequestParam("environment") String environment) {
 		if((file.length()==0) || (project.length()==0) || (environment.length()==0)){
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new PropertyTextConnector().handleRequest(file, project, environment, bohodaService),HttpStatus.OK);
+		return new ResponseEntity(new PropertyObjectConnector().handleRequest(file, project, environment, bohodaService),HttpStatus.OK);
 	}
 }
