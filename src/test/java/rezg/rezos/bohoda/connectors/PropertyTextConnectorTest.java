@@ -5,14 +5,16 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-@PropertySource("classpath:bootstrap.yml")
+@TestPropertySource(locations =  "/application.properties")
 public class PropertyTextConnectorTest {
 
 	private PropertyTextConnector target = new PropertyTextConnector();
@@ -20,8 +22,8 @@ public class PropertyTextConnectorTest {
 	String project = null;
 	String environment = null;
 	
-	// @Value("${bohoda.server.uri}")
-	private String bohodaService = "http://localhost:8888";
+	@Value(value = "${bohoda.server.uri}")
+	String bohodaService = null;
 	
 	@Test
 	@Ignore

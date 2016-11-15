@@ -9,13 +9,15 @@ import java.util.Properties;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-@PropertySource("classpath:bootstrap.yml")
+@TestPropertySource(locations =  "/application.properties")
 public class PropertyObjectConnectorTest {
 
 	private PropertyObjectConnector target = new PropertyObjectConnector();
@@ -24,8 +26,8 @@ public class PropertyObjectConnectorTest {
 	private String environment;
 
 	
-	// @Value("${bohoda.server.uri}")
-	private String bohodaService = "http://localhost:8888";
+	@Value(value = "${bohoda.server.uri}")
+	String bohodaService = null;
 	
 	@Test
 	@Ignore
