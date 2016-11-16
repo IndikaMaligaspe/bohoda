@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.jayway.jsonpath.JsonPath;
 
 import net.minidev.json.JSONArray;
+import rezg.rezos.bohoda.util.ConnectorUtil;
 
 public class JSONConnector {
 
@@ -17,6 +18,7 @@ public class JSONConnector {
 	private DataInputStream dis = null;
 	private Logger logger = (Logger) Logger.getInstance(JSONConnector.class);
 	private String JSONString;
+	private ConnectorUtil connectUtil = new ConnectorUtil();
 
 	public String handleRequest(String file, String project, String environment, String bohodaService) {
 		String sourceList = null;
@@ -48,30 +50,18 @@ public class JSONConnector {
 	}
 
 	public int connect(String bohodaService) {
-		int statusCode = 500;
+		Object[] connectionRresponse = connectUtil.connect(bohodaService, this.JSONString);
+		int returnVal = 500;
 		try {
-			mURL = new URL(bohodaService);
-			uConn = (HttpURLConnection) mURL.openConnection();
-			uConn.setDoInput(true);
-			uConn.setDoOutput(true);
-			statusCode = uConn.getResponseCode();
-			dis = new DataInputStream(uConn.getInputStream());
-			StringBuffer sbr = new StringBuffer();
-			String line = dis.readLine();
-			sbr.append(line);
-			while (null != (line = dis.readLine())) {
-				line = dis.readLine();
-				;
-				sbr.append(line);
-			}
-			this.JSONString = sbr.toString();
-			logger.debug("This JSON String --- "+this.JSONString );
+			this.JSONString = connectionRresponse[1].toString();
+			System.out.println("this.serviceRespons --- " + this.JSONString);
+			returnVal =  (int) connectionRresponse[0];
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			statusCode = 500;
 		}
 
-		return statusCode;
+		return returnVal;
 	}
 
 	public String decodeJSON(String jsonString) {

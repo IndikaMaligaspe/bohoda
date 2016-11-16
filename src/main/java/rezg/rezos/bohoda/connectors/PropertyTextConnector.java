@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.jayway.jsonpath.JsonPath;
 
 import net.minidev.json.JSONArray;
+import rezg.rezos.bohoda.util.ConnectorUtil;
 
 public class PropertyTextConnector {
 
@@ -18,6 +19,7 @@ public class PropertyTextConnector {
 	private DataInputStream dis;
 	private Logger logger = (Logger) Logger.getInstance(PropertyTextConnector.class);
 	private String serviceResponse = null;
+	private ConnectorUtil connectUtil = new ConnectorUtil();
 
 	public String handleRequest(String file, String project, String environment, String bohodaService) {
 		// TODO Auto-generated method stub
@@ -43,29 +45,19 @@ public class PropertyTextConnector {
 		return response;
 	}
 
-	public int connect(String bohodaService){
-		int statusCode = 500;
+	public int connect(String bohodaService) {
+		Object[] connectionRresponse = connectUtil.connect(bohodaService, this.serviceResponse);
+		int returnVal = 500;
 		try {
-			logger.info(bohodaService);
-			mURL = new URL(bohodaService);
-			uConn = (HttpURLConnection) mURL.openConnection();
-			uConn.setDoInput(true);
-			uConn.setDoOutput(true);
-			statusCode = uConn.getResponseCode();
-			dis = new DataInputStream(uConn.getInputStream());
-			StringBuffer sbr = new StringBuffer();
-			String line = dis.readLine();
-			sbr.append(line);
-			while (null != (line = dis.readLine())) {
-				line = dis.readLine();			
-				sbr.append(line);
-			}
-			this.serviceResponse = sbr.toString();
+			this.serviceResponse = connectionRresponse[1].toString();
+			System.out.println("this.serviceRespons --- " + this.serviceResponse);
+			returnVal =  (int) connectionRresponse[0];
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			statusCode = 500;
 		}
-		return statusCode;
+
+		return returnVal;
 	}
 
 	public String convertJsonToText(String JSONText) {

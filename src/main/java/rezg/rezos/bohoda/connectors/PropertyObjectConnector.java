@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 import net.minidev.json.JSONArray;
+import rezg.rezos.bohoda.util.ConnectorUtil;
 
 public class PropertyObjectConnector {
 
@@ -25,13 +26,15 @@ public class PropertyObjectConnector {
 	private DataInputStream dis;
 	private String serviceResponse;
 	private Logger logger = (Logger) Logger.getInstance(PropertyObjectConnector.class);
+	private ConnectorUtil connectUtil = new ConnectorUtil();
 
-	public Object handleRequest(String file, String project, String environment,String bohodaService) {
+	public Object handleRequest(String file, String project, String environment, String bohodaService) {
 		Properties props = null;
 		try {
 			props = new Properties();
-			if (connect(bohodaService + "/" + file + "/" + project + "/" + environment)==200)
-				props = convertServicResponse(serviceResponse);
+			if (connect(bohodaService + "/" + file + "/" + project + "/" + environment) == 200)
+				System.out.println("Service Response ... " + this.serviceResponse);
+			props = convertServicResponse(this.serviceResponse);
 		} catch (Exception e) {
 			e.printStackTrace();
 			props = new Properties();
@@ -41,53 +44,43 @@ public class PropertyObjectConnector {
 	}
 
 	public int connect(String bohodaService) {
-		int responseCode = 500;
+		Object[] connectionRresponse = connectUtil.connect(bohodaService, this.serviceResponse);
+		int returnVal = 500;
 		try {
-			logger.info(bohodaService);
-			mURL = new URL(bohodaService);
-			uConn = (HttpURLConnection) mURL.openConnection();
-			uConn.setDoInput(true);
-			uConn.setDoOutput(true);
-			responseCode = uConn.getResponseCode();
-			dis = new DataInputStream(uConn.getInputStream());
-			StringBuffer sbr = new StringBuffer();
-			String line = dis.readLine();
-			sbr.append(line);
-			while (null != (line = dis.readLine())) {
-				line = dis.readLine();
-				sbr.append(line);
-			}
-			this.serviceResponse = sbr.toString();
+			this.serviceResponse = connectionRresponse[1].toString();
+			System.out.println("this.serviceRespons --- " + this.serviceResponse);
+			returnVal =  (int) connectionRresponse[0];
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			responseCode = 500;
 		}
 
-		return responseCode;
+		return returnVal;
 	}
 
-	public Properties convertServicResponse(String JSONText) throws IllegalArgumentException, JsonParseException, JsonMappingException, IOException{
+	public Properties convertServicResponse(String JSONText)
+			throws IllegalArgumentException, JsonParseException, JsonMappingException, IOException {
 		Properties prop = new Properties();
-		Map <String,String>propertyMap = new HashMap<String,String>();
-		
-			JSONArray array = JsonPath.parse(JSONText).read("$.propertySources..source");
-			
-			if(array.isEmpty())
-				throw new IllegalArgumentException("Source List missing from property file!!!");
-			if(array.size()==0)
-				throw new IllegalArgumentException("Source List size is 0 for property file!!!");
-			if((array.size()==1) && (null==array.get(0)))
-				throw new IllegalArgumentException("Source is NULL !!!");
-			
-			String propertyString = new String(array.toJSONString());
-			logger.debug("Converted JSON String *************** " + propertyString);
-			propertyString = propertyString.substring(1, propertyString.length() - 1);
-			propertyMap = new ObjectMapper().readValue( propertyString,
-					new com.fasterxml.jackson.core.type.TypeReference<Map<String,String>>() {
-					});
-			prop.putAll(propertyMap);
-			propertyMap.clear();
-		
+		Map<String, String> propertyMap = new HashMap<String, String>();
+
+		JSONArray array = JsonPath.parse(JSONText).read("$.propertySources..source");
+
+		if (array.isEmpty())
+			throw new IllegalArgumentException("Source List missing from property file!!!");
+		if (array.size() == 0)
+			throw new IllegalArgumentException("Source List size is 0 for property file!!!");
+		if ((array.size() == 1) && (null == array.get(0)))
+			throw new IllegalArgumentException("Source is NULL !!!");
+
+		String propertyString = new String(array.toJSONString());
+		logger.debug("Converted JSON String *************** " + propertyString);
+		propertyString = propertyString.substring(1, propertyString.length() - 1);
+		propertyMap = new ObjectMapper().readValue(propertyString,
+				new com.fasterxml.jackson.core.type.TypeReference<Map<String, String>>() {
+				});
+		prop.putAll(propertyMap);
+		propertyMap.clear();
+
 		return prop;
 	}
 
